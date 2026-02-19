@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMY Partners Research</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #eee;
+            --text-muted: #aaa;
+            --card-bg: #16213e;
+            --border: #0f3460;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--highlight);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            color: var(--highlight);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--text);
+            background: var(--accent);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--highlight);
+            display: inline-block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--highlight);
+        }
+
+        .stat-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--highlight);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--highlight);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--text);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            margin-right: 0.3rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 1.8rem;
+            width: 12px;
+            height: 12px;
+            background: var(--highlight);
+            border-radius: 50%;
+        }
+
+        .timeline-item .date {
+            color: var(--highlight);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Status Badge */
+        .status {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background: #0a3d2a;
+            color: #4ade80;
+        }
+
+        .status.planned {
+            background: #3d2a0a;
+            color: #fbbf24;
+        }
+
+        .status.completed {
+            background: #0a2d3d;
+            color: #38bdf8;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(15, 52, 96, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><span>JMY</span> Partners Research</h1>
+    <p>파트너사 리서치 및 분석 대시보드</p>
+</header>
+
+<nav>
+    <a href="#overview" class="active">개요</a>
+    <a href="#partners">파트너사 목록</a>
+    <a href="#analysis">분석</a>
+    <a href="#timeline">타임라인</a>
+</nav>
+
+<main>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <h2 class="section-title">프로젝트 개요</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">0</div>
+                <div class="label">분석 완료 파트너사</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">0</div>
+                <div class="label">진행 중인 리서치</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">0</div>
+                <div class="label">수집된 데이터 포인트</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">-</div>
+                <div class="label">최종 업데이트</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section id="partners" class="section">
+        <h2 class="section-title">파트너사 목록</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>파트너사 데이터 준비 중</h3>
+                <p>파트너사 리서치 데이터를 추가하면 이 섹션에 각 파트너사의 정보가 카드 형태로 표시됩니다. 회사명, 주요 사업 분야, 협력 가능성 등의 정보를 포함할 수 있습니다.</p>
+                <span class="tag">대기 중</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analysis Section -->
+    <section id="analysis" class="section">
+        <h2 class="section-title">분석 데이터</h2>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>파트너사</th>
+                        <th>분야</th>
+                        <th>규모</th>
+                        <th>협력 가능성</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            리서치 데이터가 추가되면 여기에 표시됩니다.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline" class="section">
+        <h2 class="section-title">프로젝트 타임라인</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="date">2026-02-19</div>
+                <h3>프로젝트 시작</h3>
+                <p>JMY Partners Research 프로젝트 웹 대시보드 구축. 파트너사 리서치 데이터를 시각화하고 관리하기 위한 웹 인터페이스를 생성했습니다.</p>
+                <span class="status active">진행 중</span>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>JMY Partners Research &copy; 2026 | 마지막 업데이트: 2026-02-19</p>
+</footer>
+
+</body>
+</html>
