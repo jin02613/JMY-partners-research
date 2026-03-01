@@ -3,405 +3,1091 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMY Partners Research</title>
+    <title>기업 재무분석 대시보드 | JMY Partners Research</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
         :root {
-            --primary: #1a1a2e;
-            --secondary: #16213e;
-            --accent: #0f3460;
-            --highlight: #e94560;
-            --text: #eee;
-            --text-muted: #aaa;
-            --card-bg: #16213e;
-            --border: #0f3460;
+            --primary: #03c75a;
+            --primary-dark: #02a34a;
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-card-hover: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-purple: #bc8cff;
+            --accent-orange: #f0883e;
+            --accent-red: #f85149;
+            --accent-green: #3fb950;
+            --gradient-1: linear-gradient(135deg, #03c75a 0%, #00d4aa 100%);
+            --gradient-2: linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--primary);
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            padding: 3rem 2rem;
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            border-bottom: 3px solid var(--highlight);
+            padding: 2rem;
+            overflow: hidden;
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(3,199,90,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(88,166,255,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 0%, rgba(188,140,255,0.04) 0%, transparent 50%);
+            animation: heroBg 20s ease-in-out infinite alternate;
         }
 
-        header h1 span {
-            color: var(--highlight);
+        @keyframes heroBg {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-2%, 2%) rotate(3deg); }
         }
 
-        header p {
+        /* Grid background */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(48,54,61,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(48,54,61,0.3) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(3,199,90,0.1);
+            border: 1px solid rgba(3,199,90,0.3);
+            color: var(--primary);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 .highlight {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
         }
 
-        /* Navigation */
-        nav {
-            background: var(--secondary);
-            padding: 1rem 2rem;
+        .hero-stats {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
         }
 
-        nav a {
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .num {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .hero-stat .label {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            transition: all 0.2s;
+            margin-top: 0.2rem;
         }
 
-        nav a:hover, nav a.active {
-            color: var(--text);
-            background: var(--accent);
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s ease-in-out infinite;
         }
 
-        /* Main Content */
-        main {
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-muted);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 5rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
         }
 
-        /* Section */
-        .section {
-            margin-bottom: 3rem;
+        .section-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
         }
 
         .section-title {
-            font-size: 1.6rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--highlight);
-            display: inline-block;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
             margin-bottom: 3rem;
         }
 
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-card .number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--highlight);
-        }
-
-        .stat-card .label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
+        /* ===== FEATURE CARDS ===== */
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 1.5rem;
         }
 
-        .card {
-            background: var(--card-bg);
+        .feature-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: var(--highlight);
-        }
-
-        .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.8rem;
-            color: var(--highlight);
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .card .tag {
-            display: inline-block;
-            background: var(--accent);
-            color: var(--text);
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            margin-right: 0.3rem;
-        }
-
-        /* Timeline */
-        .timeline {
+            transition: all 0.3s ease;
             position: relative;
-            padding-left: 2rem;
+            overflow: hidden;
         }
 
-        .timeline::before {
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(3,199,90,0.1);
+        }
+
+        .feature-card::before {
             content: '';
             position: absolute;
-            left: 0;
             top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--accent);
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--card-bg);
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:nth-child(1)::before { background: var(--gradient-1); }
+        .feature-card:nth-child(2)::before { background: var(--gradient-2); }
+        .feature-card:nth-child(3)::before { background: linear-gradient(135deg, #f0883e, #f85149); }
+        .feature-card:nth-child(4)::before { background: linear-gradient(135deg, #3fb950, #58a6ff); }
+        .feature-card:nth-child(5)::before { background: linear-gradient(135deg, #bc8cff, #f778ba); }
+        .feature-card:nth-child(6)::before { background: linear-gradient(135deg, #f0883e, #ffd700); }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .icon-green { background: rgba(3,199,90,0.15); }
+        .icon-blue { background: rgba(88,166,255,0.15); }
+        .icon-orange { background: rgba(240,136,62,0.15); }
+        .icon-purple { background: rgba(188,140,255,0.15); }
+        .icon-red { background: rgba(248,81,73,0.15); }
+        .icon-yellow { background: rgba(255,215,0,0.15); }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1.2rem;
+        }
+
+        .feature-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(48,54,61,0.8);
+            color: var(--text-muted);
             border: 1px solid var(--border);
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.35rem;
-            top: 1.8rem;
-            width: 12px;
-            height: 12px;
-            background: var(--highlight);
-            border-radius: 50%;
+        /* ===== DASHBOARD PREVIEW ===== */
+        .preview-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .timeline-item .date {
-            color: var(--highlight);
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .preview-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
         }
 
-        .timeline-item h3 {
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-item p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Status Badge */
-        .status {
-            display: inline-block;
-            padding: 0.2rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status.active {
-            background: #0a3d2a;
-            color: #4ade80;
-        }
-
-        .status.planned {
-            background: #3d2a0a;
-            color: #fbbf24;
-        }
-
-        .status.completed {
-            background: #0a2d3d;
-            color: #38bdf8;
-        }
-
-        /* Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 1rem;
-            text-align: left;
+        .preview-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(22,27,34,0.8);
             border-bottom: 1px solid var(--border);
         }
 
-        .data-table th {
-            background: var(--accent);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .preview-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
         }
 
-        .data-table tr:hover td {
-            background: rgba(15, 52, 96, 0.3);
-        }
+        .preview-dot.red { background: #f85149; }
+        .preview-dot.yellow { background: #f0883e; }
+        .preview-dot.green { background: #3fb950; }
 
-        /* Footer */
-        footer {
-            background: var(--secondary);
+        .preview-url {
+            flex: 1;
             text-align: center;
-            padding: 2rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--border);
-            margin-top: 3rem;
+            background: rgba(48,54,61,0.5);
+            padding: 0.3rem 1rem;
+            border-radius: 6px;
+            margin-left: 0.5rem;
         }
 
-        /* Responsive */
+        .preview-body {
+            padding: 0;
+        }
+
+        /* Dashboard Mockup */
+        .dash-mock {
+            background: #fafafa;
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .dash-nav {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #03c75a;
+            padding: 0;
+        }
+
+        .dash-nav-item {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+            cursor: default;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .dash-nav-item.active {
+            color: #03c75a;
+            border-bottom-color: #03c75a;
+            font-weight: 700;
+        }
+
+        .dash-content {
+            padding: 1.5rem;
+        }
+
+        .dash-search {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 2px solid #03c75a;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+        }
+
+        .dash-search input {
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            flex: 1;
+            color: #333;
+            font-family: inherit;
+            background: transparent;
+        }
+
+        .dash-search .search-icon {
+            color: #03c75a;
+            font-size: 1.1rem;
+        }
+
+        .dash-company {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .dash-company h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .dash-company .code {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .dash-price-bar {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #e31b23;
+        }
+
+        .dash-change {
+            font-size: 0.9rem;
+            color: #e31b23;
+            font-weight: 500;
+        }
+
+        .dash-indicators {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-ind {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.7rem;
+            text-align: center;
+        }
+
+        .dash-ind .ind-label {
+            font-size: 0.7rem;
+            color: #999;
+            margin-bottom: 0.2rem;
+        }
+
+        .dash-ind .ind-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .dash-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
+        }
+
+        .dash-tab {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: #999;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .dash-tab.active {
+            color: #03c75a;
+            border-bottom-color: #03c75a;
+            font-weight: 600;
+        }
+
+        /* Mini Chart Mockup */
+        .dash-chart-area {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1rem;
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 140px;
+            padding: 0 0.5rem;
+        }
+
+        .dash-bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .dash-bar {
+            width: 100%;
+            border-radius: 3px 3px 0 0;
+            min-height: 4px;
+        }
+
+        .bar-revenue { background: #4285f4; }
+        .bar-op { background: #ea4335; }
+        .bar-net { background: #34a853; }
+
+        .dash-bar-label {
+            font-size: 0.55rem;
+            color: #bbb;
+            margin-top: 4px;
+        }
+
+        .dash-chart-legend {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.65rem;
+            color: #888;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        /* ===== TECH STACK ===== */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tech-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .tech-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .tech-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .tech-list .tech-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ===== FILE STRUCTURE ===== */
+        .file-tree {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 2;
+            max-width: 600px;
+        }
+
+        .file-tree .folder { color: var(--accent-blue); }
+        .file-tree .file-py { color: var(--accent-green); }
+        .file-tree .file-html { color: var(--accent-orange); }
+        .file-tree .file-other { color: var(--text-muted); }
+        .file-tree .comment { color: #484f58; }
+        .file-tree .indent { padding-left: 1.5rem; }
+
+        /* ===== API TABLE ===== */
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .api-table th {
+            background: rgba(48,54,61,0.5);
+            padding: 0.8rem 1.2rem;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .api-table td {
+            padding: 0.7rem 1.2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.88rem;
+        }
+
+        .api-table tr:hover td {
+            background: rgba(48,54,61,0.3);
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .method-get {
+            background: rgba(63,185,80,0.15);
+            color: var(--accent-green);
+        }
+
+        .method-post {
+            background: rgba(240,136,62,0.15);
+            color: var(--accent-orange);
+        }
+
+        .api-path {
+            font-family: 'SF Mono', monospace;
+            color: var(--accent-blue);
+            font-size: 0.82rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        footer .footer-brand span {
+            color: var(--primary);
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            main {
-                padding: 1rem;
-            }
+            .hero-stats { gap: 1.5rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .dash-indicators { grid-template-columns: repeat(2, 1fr); }
+            .tech-grid { grid-template-columns: 1fr; }
+            section { padding: 3rem 1.2rem; }
+            .api-table { font-size: 0.8rem; }
+            .api-table th, .api-table td { padding: 0.5rem 0.8rem; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1><span>JMY</span> Partners Research</h1>
-    <p>파트너사 리서치 및 분석 대시보드</p>
-</header>
-
-<nav>
-    <a href="#overview" class="active">개요</a>
-    <a href="#partners">파트너사 목록</a>
-    <a href="#analysis">분석</a>
-    <a href="#timeline">타임라인</a>
-</nav>
-
-<main>
-
-    <!-- Overview Section -->
-    <section id="overview" class="section">
-        <h2 class="section-title">프로젝트 개요</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="number">0</div>
-                <div class="label">분석 완료 파트너사</div>
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Flask + DART API + Chart.js
+        </div>
+        <h1>
+            <span class="highlight">기업 재무분석</span><br>
+            대시보드
+        </h1>
+        <p class="hero-desc">
+            DART Open API와 네이버 금융 데이터를 활용한 한국 상장기업 재무분석 플랫폼.<br>
+            실시간 주가, 10년 재무제표, 수익성 차트, 순운전자본 스크리닝까지.
+        </p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="num">15+</div>
+                <div class="label">API 엔드포인트</div>
             </div>
-            <div class="stat-card">
-                <div class="number">0</div>
-                <div class="label">진행 중인 리서치</div>
+            <div class="hero-stat">
+                <div class="num">10+</div>
+                <div class="label">분석 차트</div>
             </div>
-            <div class="stat-card">
-                <div class="number">0</div>
-                <div class="label">수집된 데이터 포인트</div>
+            <div class="hero-stat">
+                <div class="num">10년</div>
+                <div class="label">재무데이터</div>
             </div>
-            <div class="stat-card">
-                <div class="number">-</div>
-                <div class="label">최종 업데이트</div>
+            <div class="hero-stat">
+                <div class="num">3</div>
+                <div class="label">분석 모듈</div>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="scroll-indicator">
+        <svg viewBox="0 0 24 24"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+    </div>
+</div>
 
-    <!-- Partners Section -->
-    <section id="partners" class="section">
-        <h2 class="section-title">파트너사 목록</h2>
-        <div class="cards-grid">
-            <div class="card">
-                <h3>파트너사 데이터 준비 중</h3>
-                <p>파트너사 리서치 데이터를 추가하면 이 섹션에 각 파트너사의 정보가 카드 형태로 표시됩니다. 회사명, 주요 사업 분야, 협력 가능성 등의 정보를 포함할 수 있습니다.</p>
-                <span class="tag">대기 중</span>
+<!-- ===== DASHBOARD PREVIEW ===== -->
+<div class="preview-section">
+    <div style="text-align:center; margin-bottom:2rem;">
+        <span class="section-label">Live Preview</span>
+        <h2 class="section-title" style="margin:0 auto;">대시보드 미리보기</h2>
+    </div>
+    <div class="preview-container">
+        <div class="preview-toolbar">
+            <span class="preview-dot red"></span>
+            <span class="preview-dot yellow"></span>
+            <span class="preview-dot green"></span>
+            <span class="preview-url">localhost:5000 — 기업분석 대시보드</span>
+        </div>
+        <div class="preview-body">
+            <div class="dash-mock">
+                <div class="dash-nav">
+                    <div class="dash-nav-item active">기업분석</div>
+                    <div class="dash-nav-item">종목쇼핑</div>
+                    <div class="dash-nav-item">순운전자본</div>
+                </div>
+                <div class="dash-content">
+                    <div class="dash-search">
+                        <span class="search-icon">&#128269;</span>
+                        <input type="text" value="삼성전자" disabled>
+                    </div>
+                    <div class="dash-company">
+                        <h2>삼성전자</h2>
+                        <span class="code">005930</span>
+                    </div>
+                    <div class="dash-price-bar">
+                        <span class="dash-price">82,300</span>
+                        <span class="dash-change">&#9650; 1,200 (+1.48%)</span>
+                    </div>
+                    <div class="dash-indicators">
+                        <div class="dash-ind">
+                            <div class="ind-label">PER</div>
+                            <div class="ind-value">12.5</div>
+                        </div>
+                        <div class="dash-ind">
+                            <div class="ind-label">PBR</div>
+                            <div class="ind-value">1.42</div>
+                        </div>
+                        <div class="dash-ind">
+                            <div class="ind-label">ROE</div>
+                            <div class="ind-value">11.3%</div>
+                        </div>
+                        <div class="dash-ind">
+                            <div class="ind-label">배당수익률</div>
+                            <div class="ind-value">2.1%</div>
+                        </div>
+                    </div>
+                    <div class="dash-tabs">
+                        <div class="dash-tab">기업개요</div>
+                        <div class="dash-tab active">실적 그래프</div>
+                        <div class="dash-tab">10년 데이타</div>
+                    </div>
+                    <div class="dash-chart-area">
+                        <div class="dash-chart-bars">
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:45px"></div>
+                                <div class="dash-bar bar-op" style="height:18px"></div>
+                                <div class="dash-bar bar-net" style="height:14px"></div>
+                                <div class="dash-bar-label">2019</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:50px"></div>
+                                <div class="dash-bar bar-op" style="height:22px"></div>
+                                <div class="dash-bar bar-net" style="height:17px"></div>
+                                <div class="dash-bar-label">2020</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:58px"></div>
+                                <div class="dash-bar bar-op" style="height:30px"></div>
+                                <div class="dash-bar bar-net" style="height:24px"></div>
+                                <div class="dash-bar-label">2021</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:68px"></div>
+                                <div class="dash-bar bar-op" style="height:42px"></div>
+                                <div class="dash-bar bar-net" style="height:35px"></div>
+                                <div class="dash-bar-label">2022</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:55px"></div>
+                                <div class="dash-bar bar-op" style="height:12px"></div>
+                                <div class="dash-bar bar-net" style="height:8px"></div>
+                                <div class="dash-bar-label">2023</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:72px"></div>
+                                <div class="dash-bar bar-op" style="height:38px"></div>
+                                <div class="dash-bar bar-net" style="height:30px"></div>
+                                <div class="dash-bar-label">2024</div>
+                            </div>
+                            <div class="dash-bar-group">
+                                <div class="dash-bar bar-revenue" style="height:80px"></div>
+                                <div class="dash-bar bar-op" style="height:45px"></div>
+                                <div class="dash-bar bar-net" style="height:36px"></div>
+                                <div class="dash-bar-label">2025</div>
+                            </div>
+                        </div>
+                        <div class="dash-chart-legend">
+                            <span class="legend-item"><span class="legend-dot" style="background:#4285f4"></span>매출액</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#ea4335"></span>영업이익</span>
+                            <span class="legend-item"><span class="legend-dot" style="background:#34a853"></span>당기순이익</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- Analysis Section -->
-    <section id="analysis" class="section">
-        <h2 class="section-title">분석 데이터</h2>
-        <div style="overflow-x: auto;">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>파트너사</th>
-                        <th>분야</th>
-                        <th>규모</th>
-                        <th>협력 가능성</th>
-                        <th>상태</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
-                            리서치 데이터가 추가되면 여기에 표시됩니다.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+<!-- ===== FEATURES ===== -->
+<section id="features">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">주요 기능</h2>
+    <p class="section-desc">DART API 기반의 종합 재무분석 도구. 기업분석부터 전종목 스크리닝까지.</p>
 
-    <!-- Timeline Section -->
-    <section id="timeline" class="section">
-        <h2 class="section-title">프로젝트 타임라인</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="date">2026-02-19</div>
-                <h3>프로젝트 시작</h3>
-                <p>JMY Partners Research 프로젝트 웹 대시보드 구축. 파트너사 리서치 데이터를 시각화하고 관리하기 위한 웹 인터페이스를 생성했습니다.</p>
-                <span class="status active">진행 중</span>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon icon-green">&#128200;</div>
+            <h3>기업개요</h3>
+            <p>실시간 주가, 시가총액, PER·PBR·ROE 등 투자지표와 매출 구성비를 한 화면에 표시합니다. 네이버 금융에서 실시간 데이터를 크롤링합니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">실시간 주가</span>
+                <span class="feature-tag">투자지표</span>
+                <span class="feature-tag">매출구성</span>
+                <span class="feature-tag">52주 고/저</span>
             </div>
         </div>
-    </section>
 
-</main>
+        <div class="feature-card">
+            <div class="feature-icon icon-blue">&#128202;</div>
+            <h3>실적 그래프 (10+ 차트)</h3>
+            <p>매출·수익성, 현금흐름, 운전자본, 성장률, 가치평가 등 5개 카테고리 10개 이상의 Chart.js 차트를 제공합니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">연환산/연간/분기</span>
+                <span class="feature-tag">연결/개별</span>
+                <span class="feature-tag">Chart.js</span>
+            </div>
+        </div>
 
+        <div class="feature-card">
+            <div class="feature-icon icon-orange">&#128203;</div>
+            <h3>10년 재무제표</h3>
+            <p>손익계산서, 재무상태표, 현금흐름표를 10년치 테이블로 조회. 대항목/소항목 확장/축소, 연환산·연간·분기 전환을 지원합니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">손익계산서</span>
+                <span class="feature-tag">재무상태표</span>
+                <span class="feature-tag">현금흐름표</span>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon icon-purple">&#128176;</div>
+            <h3>매출이익지수 & 주가</h3>
+            <p>주가와 매출·영업이익·순이익 지수를 기준값 100으로 정규화하여 비교. 이익 추세와 주가 괴리를 시각적으로 파악합니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">주가 오버레이</span>
+                <span class="feature-tag">지수 정규화</span>
+                <span class="feature-tag">이중축 차트</span>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon icon-red">&#128270;</div>
+            <h3>순운전자본 스크리닝</h3>
+            <p>전종목 대상으로 수정 순운전자본(Adjusted NWC) 기준 스크리닝을 실행합니다. 실시간 진행률, 카테고리별 그룹핑, 엑셀 다운로드를 지원합니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">전종목 스캔</span>
+                <span class="feature-tag">실시간 진행률</span>
+                <span class="feature-tag">Excel 다운로드</span>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon icon-yellow">&#128722;</div>
+            <h3>종목쇼핑</h3>
+            <p>전체 상장사의 재무 지표를 일괄 수집하여 비교합니다. 캐시된 데이터를 우선 활용하고 미수집 종목만 네이버에서 가져옵니다.</p>
+            <div class="feature-tags">
+                <span class="feature-tag">전종목 수집</span>
+                <span class="feature-tag">캐시 활용</span>
+                <span class="feature-tag">Excel 다운로드</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TECH STACK ===== -->
+<section id="tech">
+    <span class="section-label">Tech Stack</span>
+    <h2 class="section-title">기술 구성</h2>
+    <p class="section-desc">Python Flask 기반 풀스택 웹 애플리케이션.</p>
+
+    <div class="tech-grid">
+        <div class="tech-card">
+            <h4>Backend</h4>
+            <ul class="tech-list">
+                <li><span class="tech-dot" style="background:var(--accent-green)"></span>Flask (Python Web Framework)</li>
+                <li><span class="tech-dot" style="background:var(--accent-green)"></span>OpenDartReader (DART API)</li>
+                <li><span class="tech-dot" style="background:var(--accent-green)"></span>Pandas (데이터 처리)</li>
+                <li><span class="tech-dot" style="background:var(--accent-green)"></span>ThreadPoolExecutor (병렬 처리)</li>
+                <li><span class="tech-dot" style="background:var(--accent-green)"></span>BeautifulSoup (웹 크롤링)</li>
+            </ul>
+        </div>
+        <div class="tech-card">
+            <h4>Frontend</h4>
+            <ul class="tech-list">
+                <li><span class="tech-dot" style="background:var(--accent-blue)"></span>Chart.js 4.4.7 (차트 라이브러리)</li>
+                <li><span class="tech-dot" style="background:var(--accent-blue)"></span>Vanilla JavaScript (SPA)</li>
+                <li><span class="tech-dot" style="background:var(--accent-blue)"></span>CSS3 (네이버 스타일 UI)</li>
+                <li><span class="tech-dot" style="background:var(--accent-blue)"></span>Responsive Design</li>
+            </ul>
+        </div>
+        <div class="tech-card">
+            <h4>Data Sources</h4>
+            <ul class="tech-list">
+                <li><span class="tech-dot" style="background:var(--accent-orange)"></span>DART Open API (재무제표, 배당)</li>
+                <li><span class="tech-dot" style="background:var(--accent-orange)"></span>Naver Finance (주가, 지표)</li>
+                <li><span class="tech-dot" style="background:var(--accent-orange)"></span>KOSPI / KOSDAQ 상장사</li>
+                <li><span class="tech-dot" style="background:var(--accent-orange)"></span>File + Memory Cache</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== API ENDPOINTS ===== -->
+<section id="api">
+    <span class="section-label">API</span>
+    <h2 class="section-title">API 엔드포인트</h2>
+    <p class="section-desc">15개 이상의 RESTful API로 모든 데이터를 제공합니다.</p>
+
+    <div style="overflow-x: auto;">
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>설명</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/search</td>
+                    <td>종목명 자동완성 검색</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/overview</td>
+                    <td>기업개요 (PER, PBR, ROE, 시가총액 등)</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/data</td>
+                    <td>분기별 재무데이터 (손익/재무상태/현금흐름)</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/finstate</td>
+                    <td>10년 재무제표 전체 구조</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/realtime_price</td>
+                    <td>실시간 주가 (네이버 크롤링)</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/price_chart</td>
+                    <td>10년 일별 주가 히스토리</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/dividend</td>
+                    <td>배당 데이터 (DPS, 배당성향, 수익률)</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-post">POST</span></td>
+                    <td class="api-path">/api/nwc/screening</td>
+                    <td>순운전자본 전종목 스크리닝 시작</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/nwc/screening/status</td>
+                    <td>스크리닝 진행 상태 조회</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/nwc/download</td>
+                    <td>NWC 결과 Excel 다운로드</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-post">POST</span></td>
+                    <td class="api-path">/api/shopping/collect</td>
+                    <td>종목쇼핑 전종목 수집 시작</td>
+                </tr>
+                <tr>
+                    <td><span class="method-badge method-get">GET</span></td>
+                    <td class="api-path">/api/shopping/results</td>
+                    <td>종목쇼핑 결과 데이터 조회</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ===== FILE STRUCTURE ===== -->
+<section id="structure">
+    <span class="section-label">Structure</span>
+    <h2 class="section-title">프로젝트 구조</h2>
+    <p class="section-desc">모듈화된 Flask 애플리케이션 구조.</p>
+
+    <div class="file-tree">
+        <div><span class="folder">&#128193;</span> JMY-partners-research/</div>
+        <div class="indent"><span class="file-py">&#128220;</span> main.py <span class="comment"># Flask 서버 + 라우팅 + HTML 템플릿 (3,800줄)</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> utils.py <span class="comment"># 캐시, 종목코드 변환, 크롤링 유틸</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_기업개요.py <span class="comment"># 기업개요 탭 (HTML + JS)</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_실적차트.py <span class="comment"># 매출·이익 바차트</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_실적그래프_차트.py <span class="comment"># 10+ 분석 차트 (64KB)</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_매출이익지수.py <span class="comment"># 주가 vs 이익 지수</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_10년데이타.py <span class="comment"># 10년 재무제표 테이블</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_순운전자본.py <span class="comment"># NWC 스크리닝 UI</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> app_종목쇼핑.py <span class="comment"># 종목쇼핑 UI</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> backend_finstate.py <span class="comment"># 재무제표 데이터 처리</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> backend_nwc.py <span class="comment"># NWC 스크리닝 엔진</span></div>
+        <div class="indent"><span class="file-py">&#128220;</span> backend_shopping.py <span class="comment"># 종목쇼핑 수집 엔진</span></div>
+        <div class="indent"><span class="folder">&#128193;</span> cache/ <span class="comment"># JSON 파일 캐시</span></div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
 <footer>
-    <p>JMY Partners Research &copy; 2026 | 마지막 업데이트: 2026-02-19</p>
+    <div class="footer-brand"><span>JMY</span> Partners Research</div>
+    <p>기업 재무분석 대시보드 &mdash; DART API &amp; Naver Finance</p>
+    <p style="margin-top:0.5rem; font-size:0.8rem;">Last updated: 2026-03-01</p>
 </footer>
 
 </body>
